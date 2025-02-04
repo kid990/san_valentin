@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentín</title>
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #container {
+            max-width: 100%;
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #gifContainer img, #gifContainer video {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            margin: 0 auto;
+            display: block;
+        }
+        #question {
+            font-size: 24px;
+            margin: 20px 0;
+            color: #333;
+        }
+        #buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #yesBtn {
+            background-color: green;
+            color: white;
+        }
+        #noBtn {
+            background-color: red;
+            color: white;
+        }
+        #message {
+            font-size: 24px;
+            margin-top: 20px;
+            display: none;
+            color: #333;
+        }
+        #whatsappBtn {
+            display: none; /* Oculto inicialmente */
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #25D366; /* Color verde de WhatsApp */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            max-width: 200px;
+        }
+        #whatsappBtn i {
+            font-size: 20px;
+        }
+        /* Estilos responsivos */
+        @media (max-width: 480px) {
+            #question {
+                font-size: 20px;
+            }
+            button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            #whatsappBtn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="gifContainer">
+            <img id="gif" src="inicio.gif" alt="Gif de entrada">
+        </div>
+        <h2 id="question">¿Quieres ser mi San Valentín?</h2>
+        <div id="buttons">
+            <button id="yesBtn">Sí</button>
+            <button id="noBtn">No</button>
+        </div>
+        <div id="message">OH SII, JAJAJ</div>
+        <!-- Botón de WhatsApp (oculto inicialmente) -->
+        <button id="whatsappBtn" onclick="openWhatsApp()">
+            <i class="fab fa-whatsapp"></i> Enviar mensaje
+        </button>
+    </div>
+    <script>
+        let noMessages = [
+            "¿Seguro?",
+            "¿Estás completamente seguro?",
+            "Piénsalo bien...",
+            "No me hagas esto...",
+            "Última oportunidad...",
+            "Bueno, como quieras..."
+        ];
+        let noClickCount = 0;
+        let gifsYes = ["si1.gif", "si2.gif", "si3.gif", "si4.jpeg", "si5.gif"];
+        let gifsNo = ["no1.jpeg", "no2.mp4", "no3.gif", "no3.gif", "no3.gif", "no3.gif"];
+        let gifNoFixed = "no3.gif";
+        let yesBtn = document.getElementById("yesBtn");
+        let gifContainer = document.getElementById("gifContainer");
+
+        document.getElementById("noBtn").addEventListener("click", function() {
+            if (noClickCount < noMessages.length) {
+                this.textContent = noMessages[noClickCount];
+
+                if (gifsNo[noClickCount].endsWith(".mp4")) {
+                    // Si es un video, mostramos un <video> en lugar de <img>
+                    let video = document.createElement("video");
+                    video.src = gifsNo[noClickCount];
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.width = "400";
+                    gifContainer.innerHTML = ""; // Limpiar la imagen anterior
+                    gifContainer.appendChild(video);
+                } else {
+                    // Si es una imagen, la mostramos como una imagen normal
+                    let img = document.createElement("img");
+                    img.src = gifsNo[noClickCount];
+                    gifContainer.innerHTML = ""; // Limpiar el video o imagen anterior
+                    gifContainer.appendChild(img);
+                }
+
+                noClickCount++;
+                // Aumentar el tamaño del botón "Sí"
+                yesBtn.style.fontSize = `${16 + noClickCount * 5}px`;
+                yesBtn.style.padding = `${10 + noClickCount * 2}px ${20 + noClickCount * 2}px`;
+            } else {
+                let img = document.createElement("img");
+                img.src = gifNoFixed;
+                gifContainer.innerHTML = ""; // Limpiar lo anterior
+                gifContainer.appendChild(img);
+            }
+        });
+
+        document.getElementById("yesBtn").addEventListener("click", function() {
+            // Cuando se hace clic en "Sí", limpiar el contenedor de "No"
+            gifContainer.innerHTML = '';
+            document.getElementById("buttons").style.display = "none";
+            document.getElementById("question").style.display = "none";
+            document.getElementById("message").style.display = "block";
+            let gifIndex = 0;
+            function showNextGif() {
+                if (gifIndex < gifsYes.length) {
+                    let img = document.createElement("img");
+                    img.src = gifsYes[gifIndex];
+                    gifContainer.innerHTML = ""; // Limpiar la imagen anterior
+                    gifContainer.appendChild(img);
+                    gifIndex++;
+                    setTimeout(showNextGif, 2000);
+                } else {
+                    // Mostrar el botón de WhatsApp
+                    document.getElementById("whatsappBtn").style.display = "flex";
+                }
+            }
+            showNextGif();
+        });
+
+        // Función para abrir WhatsApp
+        function openWhatsApp() {
+            let phoneNumber = "984889179"; // Número de teléfono
+            let message = "Hola"; // Mensaje predefinido
+            let url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, "_blank");
+        }
+    </script>
+</body>
+</html>
